@@ -1,9 +1,18 @@
+import {getProjects} from './index';
+import '@logseq/libs';
 
-import { getProjects } from './index';
+beforeEach(() => {
+    jest.spyOn(logseq, 'settings', 'get').mockReturnValue({
+        username: 'mockUsername',
+        password: 'mockPassword',
+        host: 'mockHost',
+        disabled: false,
+    });
+});
 
 describe('getProjects', () => {
     it('should fetch projects successfully', async () => {
-        const mockResponse = [{ id: 'project1' }, { id: 'project2' }];
+        const mockResponse = [{id: 'project1'}, {id: 'project2'}];
         global.fetch = jest.fn(() =>
             Promise.resolve({
                 ok: true,
