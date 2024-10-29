@@ -1,4 +1,4 @@
-import {getProjects} from './index';
+import {getBuild, getProjects} from './index';
 import '@logseq/libs';
 import fetchMock from 'jest-fetch-mock';
 import * as dotenv from 'dotenv';
@@ -26,5 +26,17 @@ describe('getProjects', () => {
         const mockResponse = [{id: 'project1'}, {id: 'project2'}];
         const projects = await getProjects();
         expect(projects).toEqual(mockResponse);
+    });
+});
+
+describe('getBuild', () => {
+    it('should fetch successful build', async () => {
+        const build = await getBuild('139117');
+        expect(build.status).toEqual('SUCCESS');
+    });
+
+    it('should fetch unsuccessful build', async () => {
+        const build = await getBuild('139121');
+        expect(build.status).toEqual('FAILURE');
     });
 });
