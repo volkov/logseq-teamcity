@@ -1,0 +1,2 @@
+## Teamcity plugin for logseq
+
