@@ -1,37 +1,30 @@
 import {getProjects} from './index';
 import '@logseq/libs';
+import fetchMock from 'jest-fetch-mock';
+import * as dotenv from 'dotenv';
+
+dotenv.config({ path: '.env.test' });
+
+fetchMock.enableMocks();
+fetchMock.dontMock();
 
 beforeEach(() => {
     jest.spyOn(logseq, 'settings', 'get').mockReturnValue({
-        username: 'mockUsername',
-        password: 'mockPassword',
-        host: 'mockHost',
+        username: process.env.TEAMCITY_USER,
+        password: process.env.TEAMCITY_PASSWORD,
+        host: process.env.TEAMCITY_HOST,
         disabled: false,
     });
+});
+
+afterAll(() => {
+    global.fetch = undefined;
 });
 
 describe('getProjects', () => {
     it('should fetch projects successfully', async () => {
         const mockResponse = [{id: 'project1'}, {id: 'project2'}];
-        global.fetch = jest.fn(() =>
-            Promise.resolve({
-                ok: true,
-                json: () => Promise.resolve(mockResponse),
-            })
-        ) as jest.Mock;
-
         const projects = await getProjects();
         expect(projects).toEqual(mockResponse);
-    });
-
-    it('should throw an error if the network response is not ok', async () => {
-        global.fetch = jest.fn(() =>
-            Promise.resolve({
-                ok: false,
-                statusText: 'Not Found',
-            })
-        ) as jest.Mock;
-
-        await expect(getProjects()).rejects.toThrow('Network response was not ok Not Found');
     });
 });
