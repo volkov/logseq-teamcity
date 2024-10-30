@@ -39,6 +39,11 @@ describe('getBuild', () => {
         const build = await getBuild('139121');
         expect(build.status).toEqual('FAILURE');
     });
+
+    it('should fetch inprogress build', async () => {
+        const build = await getBuild('139594');
+        expect(build).toEqual('INPROGRESS');
+    });
 });
 
 describe('parseBuildIdFromUrl', () => {
