@@ -1,4 +1,4 @@
-import {getBuild, getProjects} from './index';
+import {getBuild, getProjects, parseBuildFromUrl} from './index';
 import '@logseq/libs';
 import fetchMock from 'jest-fetch-mock';
 import * as dotenv from 'dotenv';
@@ -38,5 +38,14 @@ describe('getBuild', () => {
     it('should fetch unsuccessful build', async () => {
         const build = await getBuild('139121');
         expect(build.status).toEqual('FAILURE');
+    });
+});
+
+describe('parseBuildIdFromUrl', () => {
+    it('should parse the build ID from the URL correctly', () => {
+        const url = 'https://host/buildConfiguration/configname/139117?hideTestsFromDependencies=false&hideProblemsFromDependencies=false&expandBuildDeploymentsSection=false&pluginCoverage=true&expandBuildChangesSection=true';
+        const build = parseBuildFromUrl(url);
+        expect(build.id).toEqual('139117');
+        expect(build.name).toEqual('configname');
     });
 });

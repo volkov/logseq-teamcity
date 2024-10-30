@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Fetch build status from teamcity",
   "author": "serg-v",
+  "license": "MIT",
   "scripts": {
     "dev": "parcel ./index.html",
     "build": "parcel build --public-url . --no-source-maps index.html"
