@@ -3,9 +3,9 @@ import '@logseq/libs'
 function main() {
     // @ts-ignore
     logseq.Editor.registerSlashCommand("teamcity", async () => {
-        await logseq.UI.showMsg("Parse and format w build number!")
+        await logseq.UI.showMsg("Extract also!")
         const currentBlock = await logseq.Editor.getCurrentBlock()
-        let build = parseBuildFromUrl(currentBlock.content.trim());
+        let build = parseBuildFromUrl(extractUrlFromString(currentBlock.content.trim())!);
         let status = await getBuild(build.id).then((build) => build.status);
         await logseq.Editor.updateBlock(
             currentBlock.uuid,
@@ -14,6 +14,11 @@ function main() {
     })
 }
 
+export function extractUrlFromString(input: string): string | null {
+    const urlRegex = /(https?:\/\/[^\s)]+)/;
+    const match = input.match(urlRegex);
+    return match ? match[0] : null;
+}
 
 export function parseBuildFromUrl(url: string): { id: string, name: string } {
     const urlObj = new URL(url);

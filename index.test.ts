@@ -1,4 +1,4 @@
-import {getBuild, getProjects, parseBuildFromUrl} from './index';
+import {extractUrlFromString, getBuild, getProjects, parseBuildFromUrl} from './index';
 import '@logseq/libs';
 import fetchMock from 'jest-fetch-mock';
 import * as dotenv from 'dotenv';
@@ -47,5 +47,30 @@ describe('parseBuildIdFromUrl', () => {
         const build = parseBuildFromUrl(url);
         expect(build.id).toEqual('139117');
         expect(build.name).toEqual('configname');
+    });
+});
+
+describe('extractUrlFromString', () => {
+    it('should extract URL from a string with URL in parentheses', () => {
+        const input = "[BackendBuild #139117](https://serg-v.teamcity.com/buildConfiguration/BackendBuild/139117?hideTestsFromDependencies=false&hideProblemsFromDependencies=false&expandBuildDeploymentsSection=false&pluginCoverage=true&expandBuildChangesSection=true) - SUCCESS";
+        const expected = "https://serg-v.teamcity.com/buildConfiguration/BackendBuild/139117?hideTestsFromDependencies=false&hideProblemsFromDependencies=false&expandBuildDeploymentsSection=false&pluginCoverage=true&expandBuildChangesSection=true";
+        expect(extractUrlFromString(input)).toEqual(expected);
+    });
+
+    it('should extract URL from a string containing only the URL', () => {
+        const input = "https://serg-v.teamcity.com/buildConfiguration/BackendBuild/139117?hideTestsFromDependencies=false&hideProblemsFromDependencies=false&expandBuildDeploymentsSection=false&pluginCoverage=true&expandBuildChangesSection=true";
+        const expected = "https://serg-v.teamcity.com/buildConfiguration/BackendBuild/139117?hideTestsFromDependencies=false&hideProblemsFromDependencies=false&expandBuildDeploymentsSection=false&pluginCoverage=true&expandBuildChangesSection=true";
+        expect(extractUrlFromString(input)).toEqual(expected);
+    });
+
+    it('should extract URL from untrimmed string', () => {
+        const input = "  https://serg-v.teamcity.com/buildConfiguration/BackendBuild/139117?hideTestsFromDependencies=false&hideProblemsFromDependencies=false&expandBuildDeploymentsSection=false&pluginCoverage=true&expandBuildChangesSection=true  ";
+        const expected = "https://serg-v.teamcity.com/buildConfiguration/BackendBuild/139117?hideTestsFromDependencies=false&hideProblemsFromDependencies=false&expandBuildDeploymentsSection=false&pluginCoverage=true&expandBuildChangesSection=true";
+        expect(extractUrlFromString(input)).toEqual(expected);
+    });
+
+    it('should return null if no URL is found', () => {
+        const input = "No URL in this string";
+        expect(extractUrlFromString(input)).toBeNull();
     });
 });
