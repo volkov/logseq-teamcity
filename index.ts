@@ -13,7 +13,7 @@ function main() {
 
         await logseq.Editor.updateBlock(
             currentBlock.uuid,
-            `[${build.name} #${build.id}](${url}) - ${status}`
+            `[${build.name} #${build.id}](${url}) {{renderer :teamcity, ${status}}}`
         )
     });
 
